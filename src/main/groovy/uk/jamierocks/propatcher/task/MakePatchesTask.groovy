@@ -47,7 +47,7 @@ class MakePatchesTask extends DefaultTask {
     @InputDirectory File patches
     @Input @Optional String originalPrefix = 'a/'
     @Input @Optional String modifiedPrefix = 'b/'
-    @Input boolean ignoreWhitespace = true
+    private boolean ignoreWhitespace = true
 
     static def relative(base, file) {
         return file.path.substring(base.path.length() + 1).replaceAll(Matcher.quoteReplacement(File.separator), '/') //Replace is to normalize windows to linux/zip format
@@ -57,6 +57,15 @@ class MakePatchesTask extends DefaultTask {
         def dirs = []
         base.eachFileRecurse(FileType.DIRECTORIES){ file -> if (file.list().length == 0) dirs.add(file) }
         dirs.reverse().each{ it.delete() } //Do it in reverse order do we delete deepest first
+    }
+
+    @Input
+    boolean getIgnoreWhitespace() {
+        return ignoreWhitespace
+    }
+
+    void setIgnoreWhitespace(boolean ignoreWhitespace) {
+        this.ignoreWhitespace = ignoreWhitespace
     }
 
     @TaskAction
